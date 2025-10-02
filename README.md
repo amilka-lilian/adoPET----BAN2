@@ -67,26 +67,25 @@ Aguarde até que ambos exibam o status em verde
 
 Abra seu navegador
 Digite na barra de endereços: http://localhost/[NOME_DA_PASTA_DO_PROJETO]
-Exemplo: http://localhost/adopet
+Exemplo: http://localhost/adoPET--BAN2
 
 3. Comece a usar:
 
 A página inicial da aplicação será carregada
 Você pode fazer login ou criar uma nova conta conforme as funcionalidades disponíveis
 
-
-Solução de Problemas
-Apache não inicia:
+### Solução de Problemas
+#### Apache não inicia:
 
 Verifique se a porta 80 não está sendo usada por outro programa
 Você pode alterar a porta do Apache no arquivo httpd.conf
 
-MySQL não inicia:
+#### MySQL não inicia:
 
 Verifique se a porta 3306 não está sendo usada
 Verifique se não há outra instância do MySQL rodando no sistema
 
-Erro de conexão com o banco:
+#### Erro de conexão com o banco:
 
 Confirme que o MySQL está rodando no XAMPP
 Verifique as credenciais no arquivo de configuração PHP
