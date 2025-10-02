@@ -1,0 +1,107 @@
+CREATE DATABASE IF NOT EXISTS adopet;
+USE adopet;
+
+CREATE TABLE IF NOT EXISTS especies (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL UNIQUE,
+    descricao TEXT,
+    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS tipo_usuario (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    descricao VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS enderecos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    rua VARCHAR(255) NOT NULL,
+    numero VARCHAR(20) NOT NULL,
+    bairro VARCHAR(100) NOT NULL,
+    cep VARCHAR(10) NOT NULL,
+    cidade VARCHAR(100) NOT NULL,
+    estado VARCHAR(2) NOT NULL,
+    pais VARCHAR(100) DEFAULT 'Brasil',
+    complemento VARCHAR(255),
+    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL,
+    id_tipo_usuario INT NOT NULL,
+    documento VARCHAR(20),
+    id_endereco INT,
+    descricao TEXT,
+    status ENUM('Ativo','Inativo','Bloqueado') DEFAULT 'Ativo',
+    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_tipo_usuario) REFERENCES tipo_usuario(id),
+    FOREIGN KEY (id_endereco) REFERENCES enderecos(id)
+);
+
+CREATE TABLE IF NOT EXISTS telefones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    descricao VARCHAR(50),
+    ddd VARCHAR(3) NOT NULL,
+    numero VARCHAR(10) NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
+);
+
+CREATE TABLE IF NOT EXISTS animais (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    id_especie INT NOT NULL,
+    especie_outro VARCHAR(100),
+    raca VARCHAR(100),
+    idade ENUM('Filhote','Adulto','Idoso') NOT NULL,
+    genero ENUM('Macho','Fêmea') NOT NULL,
+    porte ENUM('Pequeno','Medio','Grande') NOT NULL,
+    castrado BOOLEAN,
+    vacinado BOOLEAN,
+    vermifugado BOOLEAN,
+    descricao TEXT NOT NULL,
+    foto_url VARCHAR(255),
+    disponivel BOOLEAN DEFAULT TRUE,
+    status ENUM('Ativo','Inativo','Adotado') DEFAULT 'Ativo',
+    id_usuario INT NOT NULL,
+    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_especie) REFERENCES especies(id),
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
+);
+
+CREATE TABLE IF NOT EXISTS interesses_adocao (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_animal INT NOT NULL,
+    id_interessado INT NOT NULL,
+    status ENUM('Pendente','Em Análise','Aprovado','Rejeitado','Adotado') DEFAULT 'Pendente',
+    mensagem_interessado TEXT,
+    mensagem_doador TEXT,
+    data_interesse TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_animal) REFERENCES animais(id),
+    FOREIGN KEY (id_interessado) REFERENCES usuarios(id)
+);
+
+CREATE TABLE IF NOT EXISTS adocoes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    id_animal INT NOT NULL,
+    data_adocao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    observacoes TEXT,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
+    FOREIGN KEY (id_animal) REFERENCES animais(id)
+);
+
+CREATE TABLE IF NOT EXISTS historico_adocao (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_animal INT NOT NULL,
+    campo_alterado VARCHAR(100) NOT NULL,
+    valor_anterior TEXT,
+    valor_alterado TEXT,
+    data_alteracao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id_usuario INT,
+    FOREIGN KEY (id_animal) REFERENCES animais(id),
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
+);
